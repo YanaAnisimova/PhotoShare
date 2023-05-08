@@ -1,0 +1,29 @@
+FROM python:3.11-slim-buster
+
+# without 'update' don't install 'curl'
+RUN apt-get update &&  \
+    apt-get install -y --no-install-recommends curl
+
+# installing Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+WORKDIR /app
+
+COPY pyproject.toml .
+COPY poetry.lock .
+
+# Create a virtual env in home directory.
+# Otherwise the dependencies are not available without 'poetry shell' command.
+ENV VIRTUAL_ENV=/app/.venv
+# first - path to depenences from pyproject.toml, second - path to poetry
+ENV PATH="${VIRTUAL_ENV}/bin:/root/.local/bin:${PATH}"
+ENV POETRY_VIRTUALENVS_IN_PROJECT=true
+
+# installing dependencies
+RUN poetry install
+
+COPY dj_project/ .
+
+CMD gunicorn dj_project.wsgi:application -b 0.0.0.0:8000
+
+#CMD python manage.py runserver 127.0.0.1:8000

@@ -1,0 +1,49 @@
+FROM python:3.11-slim-buster
+
+# Poetry will not create a new virtual environment.
+ENV POETRY_VIRTUALENVS_CREATE = false
+
+# without 'update' don't install 'curl'
+RUN apt-get update &&  \
+    apt-get install -y --no-install-recommends curl
+
+# installing Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+ENV PATH="/root/.local/bin:${PATH}"
+
+WORKDIR /app
+
+COPY pyproject.toml  dj_project/poetry.lock ./
+
+# installing dependencies
+RUN poetry install &&  \
+    rm -rf /root/.cache/pypoetry # it doesn't resize the image
+
+COPY dj_project/ .
+
+CMD gunicorn dj_project.wsgi:application -b 0.0.0.0:8000
+
+#CMD python manage.py runserver 127.0.0.1:8000
+
+
+# By default the installer will install Poetry to a user-specific directory(root/.local/share/pypoetry).
+# In more complex pipelines that may make accessing Poetry difficult
+# (especially in cases like multi-stage container builds).
+# It is highly suggested to make use of $POETRY_HOME when using the official installer in CI,
+# as that way the exact paths can be controlled.
+#ENV POETRY_HOME=/opt/poetry
+## by default creates a poetry wrapper - root/.local/bin
+#ENV PATH="${POETRY_HOME}/bin:${PATH}"
+
+#RUN $POETRY_HOME/bin/poetry config virtualenvs.create false
+
+
+#RUN /bin/true\
+#    && /usr/bin/poetry config virtualenvs.create false \
+#    && poetry install --no-interaction \
+#    && rm -rf /root/.cache/pypoetry
+
+
+# запретить Python создавать файлы с кэшом
+#ENV PYTHONDONTWRITEBYTECODE 1
+#ENV PYTHONUNBUFFERED 1
