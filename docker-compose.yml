@@ -3,8 +3,10 @@ services:
     build: .
     command:
       sh -c "python manage.py collectstatic --no-input && 
+             python manage.py makemigrations &&
              python manage.py migrate && 
-             gunicorn dj_project.wsgi:application -b 0.0.0.0:8000"
+             python manage.py shell < createsuperuser.py &&
+             gunicorn dj_project.wsgi:application -b 0.0.0.0:8000 --reload"
     ports:
       - "8000:8000"
     env_file:
@@ -12,6 +14,7 @@ services:
     volumes:
       - ./dj_project:/app
       - static:/static
+      - media:/media
     depends_on:
       - db
 
@@ -35,3 +38,4 @@ services:
 volumes:
   static:
   postgres_data:
+  media:

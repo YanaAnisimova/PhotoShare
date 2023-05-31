@@ -13,8 +13,11 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -37,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework',
+    'photo_share',
 ]
 
 MIDDLEWARE = [
@@ -119,10 +125,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_ROOT = '/static/'
-STATIC_URL = '/static/'
+STATIC_ROOT = os.getenv('DJANGO_STATIC_ROOT', default='/static/')
+STATIC_URL = os.getenv('DJANGO_STATIC_URL', default='/static/')
+
+# MEDIA_ROOT is where our files are actually stored.
+# MEDIA_URL is where they will be accessed from front end via URL.
+MEDIA_URL = os.getenv('DJANGO_MEDIA_URL', default='/media/')
+MEDIA_ROOT = os.getenv('DJANGO_MEDIA_ROOT', default='/media/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_TRUSTED_ORIGINS = ['http://*.127.0.0.1']
