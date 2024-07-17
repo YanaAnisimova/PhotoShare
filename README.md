@@ -6,3 +6,5 @@ After running `docker compose up` by clicking on the links:
 Basic tutorials: 
 - [Deploying Django with Docker Compose, Gunicorn and Nginx](https://www.youtube.com/watch?v=vJAfq6Ku4cI), 
 - [PYTHON DOCKER NGINX DJANGO. Разворачиваем web-сервер](https://www.youtube.com/watch?v=xOQOfPI05XY&t).
+
+DB diagram: https://dbdiagram.io/d/645d0f67dca9fb07c4ebcfad

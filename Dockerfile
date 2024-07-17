@@ -1,9 +1,11 @@
 FROM python:3.11-slim-buster
 
+    # to make Python avoid to write .pyc files on the import of source modules
+ENV PYTHONDONTWRITEBYTECODE=1 \
     # allows for log messages to be immediately dumped to the stream instead of being buffered.
     # This is useful for receiving timely log messages and avoiding situations where the application
     # crashes without emitting a relevant message due to the message being "stuck" in a buffer.
-ENV PYTHONUNBUFFERED=1 \
+    PYTHONUNBUFFERED=1 \
     \
     # Poetry
     # make poetry install to this location
